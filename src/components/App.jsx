@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Searchbar from './Searchbar';
 import LoaderSpinner from './Loader';
 import ImageGallery from './ImageGallery';
@@ -7,15 +10,16 @@ import Button from './Button';
 import fetchPic from '../utils/fetchPic';
 
 export class App extends Component {
+  perPage = 12;
+
   state = {
     querry: '',
     currentPage: 1,
     data: [],
+    total: 0,
     error: '',
     status: 'idle',
   };
-
-  perPage = 12;
 
   async componentDidUpdate(prevProps, prevState) {
     const { perPage } = this;
@@ -31,7 +35,11 @@ export class App extends Component {
           throw new Error('We cannot find this');
         }
 
-        this.setState({ data: data, status: 'resolved' });
+        this.setState(prevState => ({
+          data: [...prevState.data, ...data.hits],
+          total: data.total,
+          status: 'resolved',
+        }));
       } catch (error) {
         this.setState({ status: 'rejected', error: error.message });
       }
@@ -39,25 +47,33 @@ export class App extends Component {
   }
 
   handleSubmit = querry => {
-    this.setState({ querry: querry });
+    this.setState({
+      querry: querry,
+      currentPage: 1,
+      data: [],
+      total: 0,
+      error: '',
+      status: 'idle',
+    });
   };
 
-  btnLoadMore = () => {
+  loadMore = () => {
     this.setState(prevState => ({
       currentPage: prevState.currentPage + 1,
     }));
   };
 
   render() {
-    const { status, error, data, currentPage } = this.state;
+    const { status, error, data, currentPage, total } = this.state;
     return (
       <>
+        <ToastContainer />
         <Searchbar onSubmit={this.handleSubmit} />
         {status === 'pending' && <LoaderSpinner />}
-        {status === 'rejected' && <h2>{error}</h2>}
-        {status === 'resolved' && <ImageGallery images={data.hits} />}
-        {this.perPage * currentPage <= data.total && (
-          <Button onClick={this.btnLoadMore} text={'Load more'} />
+        {status === 'rejected' && toast.error(error)}
+        {status === 'resolved' && <ImageGallery images={data} />}
+        {this.perPage * currentPage <= total && (
+          <Button onClick={this.loadMore} text={'Load more'} />
         )}
       </>
     );
@@ -65,6 +81,3 @@ export class App extends Component {
 }
 
 export default App;
-
-//! не обнова а додавання нових результатів
-//*в ліст приходить дата, і коли приходить має додавтись в стейт новий масив
