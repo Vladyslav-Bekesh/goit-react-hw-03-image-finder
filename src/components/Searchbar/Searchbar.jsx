@@ -12,13 +12,18 @@ class Searchbar extends Component {
   onSubmit = event => {
     event.preventDefault();
 
-    this.props.onSubmit(this.state.searchField);
+    this.props.onSubmit(this.makeCorrectQuerry(this.state.searchField));
     this.resetForm();
   };
 
   resetForm = () => {
     this.setState({ searchField: '' });
   };
+
+  makeCorrectQuerry(querry) {
+    const cos = querry.trim().split(' ').join('+');
+    return cos;
+  }
 
   render() {
     const { searchField } = this.state;
