@@ -7,7 +7,12 @@ import Searchbar from './Searchbar';
 import LoaderSpinner from './Loader';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
+import Modal from './Modal';
+import SearchForm from './SearchForm';
+
 import fetchPic from '../utils/fetchPic';
+
+import { ImgCss } from './Modal/Modal.styled';
 
 export class App extends Component {
   perPage = 12;
@@ -19,6 +24,8 @@ export class App extends Component {
     total: 0,
     error: '',
     status: 'idle',
+    showModal: false,
+    bigImage: '',
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -62,6 +69,25 @@ export class App extends Component {
     });
   };
 
+  togleBigImg = event => {
+    event.preventDefault();
+    const { target } = event;
+
+    this.togleModal(event);
+
+    this.setState({
+      bigImage: target.getAttribute('data-large-image-url'),
+    });
+  };
+
+  togleModal = event => {
+    event.preventDefault();
+
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
+  };
+
   loadMore = () => {
     this.setState(prevState => ({
       currentPage: prevState.currentPage + 1,
@@ -69,17 +95,31 @@ export class App extends Component {
   };
 
   render() {
-    const { status, error, data, currentPage, total } = this.state;
+    const { status, error, data, currentPage, total, showModal, bigImage } =
+      this.state;
+    
     return (
       <>
-        {/* toast.error */}
         <ToastContainer />
-        <Searchbar onSubmit={this.handleSubmit} />
+        <Searchbar>
+          <SearchForm onSubmit={this.handleSubmit} />
+        </Searchbar>
+
         {status === 'pending' && <LoaderSpinner />}
         {status === 'rejected' && toast.error(error)}
-        {status === 'resolved' && <ImageGallery images={data} />}
+
+        {status === 'resolved' && (
+          <ImageGallery images={data} onClick={this.togleBigImg} />
+        )}
+
         {this.perPage * currentPage <= total && (
           <Button onClick={this.loadMore} text={'Load more'} />
+        )}
+
+        {showModal && (
+          <Modal onClose={this.togleModal}>
+            <ImgCss src={bigImage} alt="" />
+          </Modal>
         )}
       </>
     );

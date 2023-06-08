@@ -3,16 +3,16 @@ import PropTypes, { object } from 'prop-types';
 
 import ImageGalleryItem from '../ImageGalleryItem';
 
-function ImageGallery({ images }) {
+function ImageGallery({ images, onClick }) {
   return (
     <ul>
-      {/* <li><p>asdasd</p></li> */}
       {images.map(({ previewURL, largeImageURL, id }) => {
         return (
           <ImageGalleryItem
             previewURL={previewURL}
             largeImageURL={largeImageURL}
             key={id}
+            onClick={onClick}
           />
         );
       })}
