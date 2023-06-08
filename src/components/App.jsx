@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ToastContainer, toast } from 'react-toastify';
+// import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Searchbar from './Searchbar';
@@ -23,7 +23,7 @@ export class App extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     const { perPage } = this;
-    const { querry, currentPage, status } = this.state;
+    const { querry, currentPage } = this.state;
     const { querry: prevQuerry, currentPage: prevPage } = prevState;
 
     if (querry !== prevQuerry || currentPage !== prevPage) {
@@ -73,7 +73,7 @@ export class App extends Component {
     return (
       <>
         {/* toast.error */}
-        <ToastContainer />
+        {/* <ToastContainer /> */}
         <Searchbar onSubmit={this.handleSubmit} />
         {status === 'pending' && <LoaderSpinner />}
         {status === 'rejected' && <h2>{console.log(error, 'IN JSX')}</h2>}
