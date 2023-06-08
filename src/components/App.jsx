@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-// import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Searchbar from './Searchbar';
@@ -73,10 +73,10 @@ export class App extends Component {
     return (
       <>
         {/* toast.error */}
-        {/* <ToastContainer /> */}
+        <ToastContainer />
         <Searchbar onSubmit={this.handleSubmit} />
         {status === 'pending' && <LoaderSpinner />}
-        {status === 'rejected' && <h2>{console.log(error, 'IN JSX')}</h2>}
+        {status === 'rejected' && toast.error(error)}
         {status === 'resolved' && <ImageGallery images={data} />}
         {this.perPage * currentPage <= total && (
           <Button onClick={this.loadMore} text={'Load more'} />
