@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function ImageGalleryItem({ largeImageURL, previewURL, id }) {
+function ImageGalleryItem({ 'data-lagre-img':largeImageURL, previewURL, id }) {
   return (
-    <li key={id}>
+    <li key={id} >
       <img src={previewURL} alt="" />
     </li>
   );

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
   state = {
@@ -11,9 +12,13 @@ class Searchbar extends Component {
 
   onSubmit = event => {
     event.preventDefault();
+    if (this.state.searchField !== '') {
+      this.props.onSubmit(this.makeCorrectQuerry(this.state.searchField));
+      this.resetForm();
+      return;
+    }
 
-    this.props.onSubmit(this.makeCorrectQuerry(this.state.searchField));
-    this.resetForm();
+    toast.warning('Enter name of images or photos');
   };
 
   resetForm = () => {

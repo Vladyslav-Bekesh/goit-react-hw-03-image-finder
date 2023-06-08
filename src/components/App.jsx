@@ -29,9 +29,13 @@ export class App extends Component {
     if (querry !== prevQuerry || currentPage !== prevPage) {
       try {
         this.setState({ status: 'pending' });
+        console.log('fecth');
 
         const data = await fetchPic(querry, currentPage, perPage);
+
+        console.log('fecth fecthed');
         if (data.hits.length === 0) {
+          console.log('fecth rejected');
           throw new Error('We cannot find this');
         }
 
@@ -40,8 +44,9 @@ export class App extends Component {
           total: data.total,
           status: 'resolved',
         }));
-      } catch (error) {
-        this.setState({ status: 'rejected', error: error.message });
+      } catch ({ message }) {
+        console.log(message);
+        this.setState({ status: 'rejected', error: message });
       }
     }
   }
@@ -67,10 +72,11 @@ export class App extends Component {
     const { status, error, data, currentPage, total } = this.state;
     return (
       <>
+        {/* toast.error */}
         <ToastContainer />
         <Searchbar onSubmit={this.handleSubmit} />
         {status === 'pending' && <LoaderSpinner />}
-        {status === 'rejected' && toast.error(error)}
+        {status === 'rejected' && <h2>{console.log(error, 'IN JSX')}</h2>}
         {status === 'resolved' && <ImageGallery images={data} />}
         {this.perPage * currentPage <= total && (
           <Button onClick={this.loadMore} text={'Load more'} />
