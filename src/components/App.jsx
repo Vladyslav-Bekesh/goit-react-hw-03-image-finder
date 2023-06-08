@@ -94,8 +94,13 @@ export class App extends Component {
     }));
   };
 
+  handleNotifcation = () => {
+    this.setState({ status: 'idle' });
+    return toast.error(this.state.error);
+   }
+
   render() {
-    const { status, error, data, currentPage, total, showModal, bigImage } =
+    const { status, data, currentPage, total, showModal, bigImage } =
       this.state;
     
     return (
@@ -106,7 +111,7 @@ export class App extends Component {
         </Searchbar>
 
         {status === 'pending' && <LoaderSpinner />}
-        {status === 'rejected' && toast.error(error)}
+        {status === 'rejected' && this.handleNotifcation()}
 
         {status === 'resolved' && (
           <ImageGallery images={data} onClick={this.togleBigImg} />
